@@ -28,34 +28,37 @@ def root():
 
 @app.post("/v1/devices/", response_model=schemas.FDDevice, status_code=status.HTTP_201_CREATED)
 def create_devices(todo: schemas.DeviceCreate, session: Session = Depends(get_session)):
-    # create an instance of the ToDo database model
-    tododb = models.FDDevice(description=todo.description)
+    # create an instance of the FD database model
+    tododb = models.FDDevice(deviceType=todo.deviceType,
+                             deviceId=todo.deviceId, active=todo.active, department=todo.department,
+                             roomNumber=todo.roomNumber, floorNumber=todo.floorNumber, status=todo.status
+                             ,description=todo.description, dateTime=todo.dateTime)
 
     # add it to the session and commit it
     session.add(tododb)
     session.commit()
     session.refresh(tododb)
 
-    # return the todo object
+    # return the fd object
     return tododb
 
 
-@app.get("/v1/devices/{id}", response_model=schemas.FDDevice)
-def read_devices(id: int, session: Session = Depends(get_session)):
-    # get the todo item with the given id
-    todo = session.query(models.FDDevice).get(id)
+@app.get("/v1/devices/{deviceId}", response_model=schemas.FDDevice)
+def read_devices(deviceId: int, session: Session = Depends(get_session)):
+    # get the fd item with the given id
+    todo = session.query(models.FDDevice).get(deviceId)
 
-    # check if todo item with given id exists. If not, raise exception and return 404 not found response
+    # check if fd item with given id exists. If not, raise exception and return 404 not found response
     if not todo:
-        raise HTTPException(status_code=404, detail=f"todo item with id {id} not found")
+        raise HTTPException(status_code=404, detail=f"fd item with id {deviceId} not found")
 
     return todo
 
 
-@app.put("/v1/devices/{id}", response_model=schemas.FDDevice)
-def update_devices(id: int, description: str, session: Session = Depends(get_session)):
+@app.put("/v1/devices/{deviceId}", response_model=schemas.FDDevice)
+def update_devices(deviceId: int, description: str, session: Session = Depends(get_session)):
     # get the todo item with the given id
-    todo = session.query(models.FDDevice).get(id)
+    todo = session.query(models.FDDevice).get(deviceId)
 
     # update todo item with the given description (if an item with the given id was found)
     if todo:
@@ -64,22 +67,22 @@ def update_devices(id: int, description: str, session: Session = Depends(get_ses
 
     # check if todo item with given id exists. If not, raise exception and return 404 not found response
     if not todo:
-        raise HTTPException(status_code=404, detail=f"todo item with id {id} not found")
+        raise HTTPException(status_code=404, detail=f"todo item with id {deviceId} not found")
 
     return todo
 
 
-@app.delete("/v1/devices/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_devices(id: int, session: Session = Depends(get_session)):
-    # get the todo item with the given id
-    todo = session.query(models.FDDevice).get(id)
+@app.delete("/v1/devices/{deviceId}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_devices(deviceId: int, session: Session = Depends(get_session)):
+    # get the fd item with the given deviceId
+    todo = session.query(models.FDDevice).get(deviceId)
 
-    # if todo item with given id exists, delete it from the database. Otherwise raise 404 error
+    # if fd item with given id exists, delete it from the database. Otherwise, raise 404 error
     if todo:
         session.delete(todo)
         session.commit()
     else:
-        raise HTTPException(status_code=404, detail=f"todo item with id {id} not found")
+        raise HTTPException(status_code=404, detail=f"todo item with deviceId {deviceId} not found")
 
     return None
 
