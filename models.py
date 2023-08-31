@@ -7,11 +7,11 @@ from datetime import datetime
 class FDDevice(Base):
     __tablename__ = 'fd'
     deviceId = Column(Integer, primary_key=True)
-    description = Column(String(256))
     deviceType = Column(String(256))
     active = Column(String(256))
     department = Column(String(256))
     roomNumber = Column(Integer)
     floorNumber = Column(Integer)
-    status = str
-    dateTime = datetime
+    status = Column(String(256))
+    description = Column(String(256))
+    # dateTime = datetime

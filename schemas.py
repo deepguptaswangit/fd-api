@@ -12,20 +12,20 @@ class DeviceCreate(BaseModel):
     floorNumber: int
     status: str
     description: str
-    dateTime: datetime
+    # dateTime: datetime
 
 
 # Complete Device Schema (Pydantic Model)
 class FDDevice(BaseModel):
     deviceId: int
-    description: str
     deviceType: str
     active: str
     department: str
     roomNumber: int
     floorNumber: int
     status: str
-    dateTime: datetime
+    description: str
+    # dateTime: datetime
 
     class Config:
         from_attributes = True
